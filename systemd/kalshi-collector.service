@@ -1,4 +1,5 @@
 [Unit]
+StartLimitIntervalSec=0
 Description=Kalshi BTC 15-minute market data collector
 After=network-online.target
 Wants=network-online.target
@@ -12,7 +13,6 @@ EnvironmentFile=/opt/kalshi-btc15-collector/collector.env
 ExecStart=/opt/kalshi-btc15-collector/venv/bin/python run.py
 Restart=always
 RestartSec=5
-StartLimitIntervalSec=0
 NoNewPrivileges=true
 PrivateTmp=true
 
