@@ -1,4 +1,7 @@
-data/
+# Ignore scratch data, but keep the pushed window data under data/btc15/
+/data/*
+!/data/btc15/
+# Secrets and build cruft — never commit these
 *.pem
 collector.env
 venv/
