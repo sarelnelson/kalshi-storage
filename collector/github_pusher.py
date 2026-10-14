@@ -1,4 +1,5 @@
-"""GitHub batch pusher: commits completed window files to a local git clone."""
+"""GitHub batch pusher: commits completed window files to a local git clone,
+then deletes the scratch originals after a confirmed push to control disk."""
 from __future__ import annotations
 
 import logging
@@ -23,6 +24,7 @@ class GitHubPusher:
         self._lock = threading.Lock()
         self._last_push = 0.0
         self._pending = False
+        self._staged_sources = []
         if not (self.repo_dir / ".git").exists():
             raise RuntimeError(f"{self.repo_dir} is not a git repository")
         self.dest_dir.mkdir(parents=True, exist_ok=True)
@@ -36,6 +38,7 @@ class GitHubPusher:
             try:
                 shutil.copy2(window_path, self.dest_dir / Path(window_path).name)
                 self._pending = True
+                self._staged_sources.append(Path(window_path))
                 LOG.info("staged %s", Path(window_path).name)
             except Exception:
                 LOG.exception("failed to stage %s", window_path)
@@ -72,3 +75,11 @@ class GitHubPusher:
         LOG.info("pushed to GitHub: %s", msg)
         self._last_push = time.monotonic()
         self._pending = False
+        for src in self._staged_sources:
+            try:
+                if src.exists():
+                    src.unlink()
+                    LOG.info("cleaned scratch file %s", src.name)
+            except Exception:
+                LOG.exception("failed to clean scratch file %s", src)
+        self._staged_sources.clear()
