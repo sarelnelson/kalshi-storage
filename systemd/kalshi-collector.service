@@ -1,0 +1,20 @@
+[Unit]
+Description=Kalshi BTC 15-minute market data collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kalshi
+Group=kalshi
+WorkingDirectory=/opt/kalshi-btc15-collector/collector
+EnvironmentFile=/opt/kalshi-btc15-collector/collector.env
+ExecStart=/opt/kalshi-btc15-collector/venv/bin/python run.py
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=0
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
