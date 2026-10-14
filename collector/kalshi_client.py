@@ -50,7 +50,7 @@ class KalshiClient:
         signature = self._private_key.sign(
             message,
             padding.PSS(mgf=padding.MGF1(hashes.SHA256()),
-                        salt_length=padding.DIGEST_LENGTH),
+                        salt_length=padding.PSS.DIGEST_LENGTH),
             hashes.SHA256())
         return {
             "KALSHI-ACCESS-KEY": self.api_key_id,
